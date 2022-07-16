@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %} <title> Пост {{post.text|truncatechars:100}}  </title> {% endblock %}
+  <body>       
+    <main>
+      {% block content %}
+      {% load thumbnail %}
+      <main>
+        <div class="container py-5">
+          <div class="row">
+            <aside class="col-12 col-md-3">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  Дата публикации: {{ post.pub_date|date:"d E Y" }}
+                </li>               
+                <li class="list-group-item">
+                  <a>группа: {{post.group}}</a>
+                  {% if post.group %}
+                    <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+                  {% endif %}
+                </li>            
+                <li class="list-group-item">
+                  Автор: {{ post.author }}
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Всего постов пользователя {{post.author}}: {{count_of_posts}}
+                </li>
+                <li class="list-group-item">
+                  <a href="{% url 'posts:profile' post.author %}">
+                    все посты пользователя
+                  </a>
+                </li>
+              </ul>
+            </aside>
+            <article class="col-12 col-md-9">
+              {% include 'includes/post.html' %}   
+              <a class="btn btn-primary" href="{% url 'posts:post_edit' post.id %}">
+                редактировать запись
+              </a>
+            </article>
+            {% include 'posts/includes/comments.html' %} 
+          </div>     
+        </div>
+      </main>
+      {% endblock %}
+  </body>
+  {% if not forloop.last %}<hr>{% endif %}

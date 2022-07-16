@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load cache %}
+{% load thumbnail %}
+{% block title %} <title> Последние обновления на сайте </title> {% endblock %}
+{% cache 20 index_page %}
+{% block content %}
+  <div class="container py-5">     
+  <h1> Главная страница проекта Yatube </h1>
+  {% include 'posts/includes/switcher.html' %}
+  {% for post in page_obj %}
+  <article>
+    <ul>
+      <li>
+        Автор: {{post.author}}
+        <a href="{%url 'posts:profile' post.author %}">все посты пользователя</a>
+      </li>
+      <li>
+        Дата публикации: {{ post.pub_date|date:"d E Y" }} 
+      </li>
+    </ul>
+    {% include 'includes/post.html' %}
+    <a href="{%url 'posts:post_detail' post.id %}">подробная информация</a>
+  </article>       
+  {% if post.group %}
+    <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+  {% endif %}        
+  <hr>
+  {% endfor %}
+  {% include 'posts/includes/paginator.html' %}
+{% endblock %}
+{% endcache %}

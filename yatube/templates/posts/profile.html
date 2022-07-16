@@ -1,0 +1,46 @@
+ {% extends 'base.html' %}
+{% block title %} <title> Профайл пользователя {{author.username}}  </title> {% endblock %}
+  <body>       
+      <main>
+      {% block content %}
+      <div class="container py-5">      
+        <div class="mb-5">  
+        <h1>Все посты пользователя {{author.username}} </h1>
+        <h3>Всего постов: {{count_of_posts}} </h3> 
+        {% if following %}
+        <a
+          class="btn btn-lg btn-light"
+          href="{% url 'posts:profile_unfollow' author.username %}" role="button">
+          Отписаться
+        </a>
+        {% else %}
+          <a
+            class="btn btn-lg btn-primary"
+            href="{% url 'posts:profile_follow' author.username %}" role="button">
+            Подписаться
+          </a>
+        {% endif %}
+      </div>
+        {% for post in page_obj %}
+        <article>
+          <ul>
+            <li>
+              Дата публикации: {{ post.pub_date|date:"d E Y" }} 
+            </li>
+          </ul>
+          {% include 'includes/post.html' %}
+          <a href="{%url 'posts:post_detail' post.id %}">подробная информация</a>
+        </article>       
+        {% if post.group %}
+          <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+        {% endif %}        
+        <hr>
+      <div class="container py-5">        
+        {% endfor %}
+        {% include 'posts/includes/paginator.html' %} 
+        {% if not forloop.last %}<hr>{% endif %}
+        {% endblock %} 
+      </div>
+    </main>
+  </body>
+</html> 
