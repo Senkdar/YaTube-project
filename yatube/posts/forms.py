@@ -19,6 +19,6 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('text',)
-        help_text ={
+        help_text = {
             'text': 'введите комментарий'
         }
