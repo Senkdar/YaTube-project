@@ -230,23 +230,24 @@ class FollowTests(TestCase):
         """создаем тестовые записи"""
         super().setUpClass()
         cls.user_follower = User.objects.create_user(username='follower')
-        cls.user_following = User.objects.create_user(username='following')
+        cls.author_1 = User.objects.create_user(username='author_1')
+        cls.author_2 = User.objects.create_user(username='author_2')
         Follow.objects.create(
             user=cls.user_follower,
-            author=cls.user_following
+            author=cls.author_1
         )
         Post.objects.create(
             text='Тестовый пост подписки',
-            author=cls.user_following
+            author=cls.author_1
         )
         cls.follow_index = ('posts:follow_index')
         cls.profile_follow = (
             'posts:profile_follow',
-            [cls.user_following.username]
+            [cls.author_2.username]
         )
         cls.profile_unfollow = (
             'posts:profile_unfollow',
-            [cls.user_following.username]
+            [cls.author_1.username]
         )
         cls.page_obj = 'page_obj'
 
@@ -255,25 +256,28 @@ class FollowTests(TestCase):
         self.client_auth_follower = Client()
         self.client_auth_following = Client()
         self.client_auth_follower.force_login(self.user_follower)
-        self.client_auth_following.force_login(self.user_following)
+        self.client_auth_following.force_login(self.author_1)
 
     def test_new_in_follow_page(self):
         """Новый пост появляется в ленте пользователей,
             которые на него подписаны
         """
+        url, args = self.profile_follow
+        self.client_auth_follower.get(reverse(url, args=args))
         response = self.client_auth_follower.get(reverse(self.follow_index))
         self.assertEqual(
             response.context[self.page_obj][0].author.id,
-            self.user_following.id)
+            self.author_1.id)
 
-    def test_user_can_follow(self):
-        """пользователь может подписаться на автора
-            не более одного раза
+    def test_user_can_follow_once(self):
+        """пользователь может подписаться на автора,
+            при этом не более одного раза
         """
         count_of_follow = Follow.objects.count()
         url, args = self.profile_follow
-        self.client_auth_follower.get(reverse(url, args=args))
-        self.assertEqual(Follow.objects.count(), count_of_follow)
+        for follow in range(2):
+            self.client_auth_follower.get(reverse(url, args=args))
+        self.assertEqual(Follow.objects.count(), count_of_follow + 1)
 
     def test_user_can_unfollow(self):
         """пользователь может отписаться от автора"""

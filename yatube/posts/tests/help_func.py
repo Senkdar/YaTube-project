@@ -1,6 +1,13 @@
 from http import HTTPStatus
 
-from posts.models import Post
+from posts.models import Comment, Post
+
+
+def check_labels_comments(self):
+    """фкункция для проверки полей комментария"""
+    self.assertEqual(Comment.objects.first().post, self.post)
+    self.assertEqual(Comment.objects.first().text, self.comment.text)
+    self.assertEqual(Comment.objects.first().author, self.author)
 
 
 def check_labels(self):
