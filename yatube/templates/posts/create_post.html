@@ -16,7 +16,7 @@
               </div>
                 <div class="card-body"> 
                   {% include 'posts/includes/form_errors.html' %}
-                  <form method="post" action="{% url 'posts:post_create' %}" enctype="multipart/form-data"> 
+                  <form method="post" enctype="multipart/form-data"  action="{% url 'posts:post_create' %}"> 
                     {% csrf_token %} 
                     {% include 'posts/includes/form.html' %}
                     <button type="submit" class="btn btn-primary">

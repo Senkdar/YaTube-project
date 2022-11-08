@@ -2,7 +2,7 @@
 
 from django.conf import settings
 from django.db import migrations, models
-
+import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('text', models.TextField(help_text='введите текст', verbose_name='текст')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='дата публикации')),
-                ('author', models.ForeignKey(on_delete='cascade', related_name='comments', to=settings.AUTH_USER_MODEL, verbose_name='автор')),
-                ('post', models.ForeignKey(on_delete='cascade', related_name='comments', to='posts.Post', verbose_name='комменнтарий')),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to=settings.AUTH_USER_MODEL, verbose_name='автор')),
+                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='posts.Post', verbose_name='комменнтарий')),
             ],
             options={
                 'verbose_name': 'комментарий',

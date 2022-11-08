@@ -1,4 +1,3 @@
-from tkinter import CASCADE
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -66,13 +65,13 @@ class Comment (models.Model):
     """Модель комментариев."""
     post = models.ForeignKey(
         Post,
-        on_delete=CASCADE,
+        on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='комменнтарий'
     )
     author = models.ForeignKey(
         User,
-        on_delete=CASCADE,
+        on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='автор'
     )

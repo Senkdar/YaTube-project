@@ -42,10 +42,17 @@ def profile(request, username):
     """"страница для отображения данных об авторе"""
     author = get_object_or_404(User, username=username)
     post_list = author.posts.all()
+    if request.user.is_authenticated:
+        following = Follow.objects.filter(
+            user=request.user, author=author
+        ).exists()
+    else:
+        following = False
     context = {
         'page_obj': paginator(post_list, request),
         'author': author,
-        'count_of_posts': post_list.count
+        'count_of_posts': post_list.count,
+        'following': following
     }
     return render(request, 'posts/profile.html', context)
 
@@ -91,7 +98,7 @@ def post_edit(request, post_id):
         post = form.save(commit=False)
         post.author = request.user
         form.save()
-        return redirect('posts:post_detail', post_id)
+        return redirect('posts:post_detail', post_id=post_id)
     context = {
         'form': form,
         'is_edit': True
